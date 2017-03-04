@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>网易汽车</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.carShow{
+			width: 404px;
+			height: 327px;
+			margin: 100px;
+			position: relative;
+		}
+		.carShow .pic ul{
+			list-style: none;
+		}
+		.carShow .pic ul li{
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+		.carShow .pic ul li.first{
+			display: block;
+		}
+		.carShow .pic ul li img{
+			width: 404px;
+		}
+		.carShow .bar{
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 26px;
+		}
+		.carShow .bar .hd{
+			float: left;
+			width: 21px;
+			height: 26px;
+			background:url(images/car_pic_ctr.png) no-repeat 0 0;
+		}
+		.carShow .bar .bd{
+			float: left;
+			width: 362px;
+			height: 26px;
+			background:url(images/car_pic_ctr.png) repeat-x 0 -26px;
+		}
+		.carShow .bar .ft{
+			float: left;
+			width: 21px;
+			height: 26px;
+			background:url(images/car_pic_ctr.png) no-repeat 0 -78px;
+		}
+		.carShow .bar .bd .line{
+			width: 300px;
+			height: 26px;
+			margin: 0 auto;
+			background:url(images/car_pic_ctr.png) repeat-x 0 -52px;
+			position: relative;
+		}
+		.carShow .bar .bd b{
+			position: absolute;
+			width: 21px;
+			height: 26px;
+			background:url(images/car_pic_ctr.png) no-repeat 0 -104px;
+			left: -10px;
+			top: 0;
+			cursor: pointer;
+		}
+		.carShow .number1{
+			position: absolute;
+			top: 0;
+			left: 20px;
+			line-height: 26px;
+			font-size: 14px;
+		}
+		.carShow .number2{
+			position: absolute;
+			top: 0;
+			right: 0px;
+			line-height: 26px;
+			font-size: 14px;
+		}
+	</style>
+</head>
+<body>
+	<div class="carShow">
+		<div class="pic">
+			<ul id="carList">
+				<li class="first"><img src="images/1.png" alt="" /></li>
+				<li><img src="images/2.png" alt="" /></li>
+				<li><img src="images/3.png" alt="" /></li>
+				<li><img src="images/4.png" alt="" /></li>
+				<li><img src="images/5.png" alt="" /></li>
+			</ul>
+		</div>
+		<div class="bar">
+			<div class="hd">
+			</div>
+			<div class="bd">
+				<div class="line" id="line">
+					<b id="barb"></b>
+				</div>
+			</div>
+			<div class="ft">
+			</div>
+			<span class="number1">0°</span>
+			<span class="number2">180°</span>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	<script type="text/javascript">
+		//滑块
+		var $barb = $("#barb");
+		var $line = $("#line");
+		var $carListLis = $("#carList li");
+		var idx = 0; //0、1、2、3、4
+		//拖拽滑块：
+		$barb.draggable({
+			"axis" : "x",
+			//jQuery会自作多情，如果你用数组来设置范围，表示的是距离页面边边的矩形区域。所以我们要用净位置去修正它的自作多情。
+			"containment" : [$line.offset().left - 10,0,$line.offset().left + 290,0],
+			//拖拽的咯噔
+			"grid" : [75,0],
+			"drag" : function(event,ui){
+				var x = ui.position.left;
+				//预算一个x+10/75，看看结果和信号量是否一样；
+				//如果预算的结果和信号量不一样，信号量再改变。
+				//防止信号量大量重复变化，从0变化成为0没有意义。
+				if(idx != (x + 10) / 75){
+					//老图淡出
+					$carListLis.eq(idx).stop(true).fadeOut(200);
+					//信号量改变
+					idx = (x + 10) / 75;
+					//新图淡入
+					$carListLis.eq(idx).stop(true).fadeIn(200);
+				}
+			}
+		});
+
+		//点击滑道
+		$line.mousedown(function(event){
+			//得到手指位置
+			var x = event.offsetX;
+			//判定idx值
+			if(idx != Math.round(x / 75)){
+				//老图淡出
+				$carListLis.eq(idx).stop(true).fadeOut(200);
+				//计算新的信号量，四舍五入
+				idx = Math.round(x / 75);
+				//新图淡入
+				$carListLis.eq(idx).stop(true).fadeIn(200);
+				//让滑块进行移动
+				$barb.css("left",idx * 75 - 10);
+			}
+		});
+
+		// 在滑块上点击的时候，不需要触发滑道上的点击事件。
+		$barb.mousedown(function(event){
+			event.stopPropagation();
+			return;
+		});
+	</script>
+</body>
+</html>
