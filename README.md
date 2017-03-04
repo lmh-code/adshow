@@ -9,4 +9,4 @@ DOM效果
 分析业务逻辑：点击滑到，得到手指位置，然后判断信号量，如果符合条件，新图淡入，旧图淡出并重新设置信号量。
 
 #####效果展示：
-[This link](http://donymh.cn/adshow/) has no title attribute.
+[查看演示](http://donymh.cn/adshow/).
